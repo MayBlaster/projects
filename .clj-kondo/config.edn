@@ -1,0 +1,2 @@
+{:lint-as {helix.core/defnc clojure.core/defn}
+ :linters {:unresolved-symbol {:exculde [(helix.core/$) (helix.core/<>)]}}}

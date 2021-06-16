@@ -1,0 +1,110 @@
+{:projects/system
+ {[:projects.api/api-resources :projects.handler/ping] {:projects.api/symbol projects.handler/ping
+                                                        :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/get-all-status] {:projects.api/symbol projects.handler/get-all-status
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/get-project] {:projects.api/symbol projects.handler/get-project
+                                                                :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/get-projects] {:projects.api/symbol projects.handler/get-projects
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/put-project] {:projects.api/symbol projects.handler/put-project
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/post-project] {:projects.api/symbol projects.handler/post-project
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/delete-project] {:projects.api/symbol projects.handler/delete-project
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/get-history] {:projects.api/symbol projects.handler/get-history
+                                                                  :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-login-resources :projects.handler/login] {:projects.api/symbol projects.handler/login
+                                                               :projects.api/db #ig/ref :projects.db/connection
+                                                               :projects.api/auth #ig/ref :projects.auth/auth-config}
+  [:projects.api/api-resources :projects.handler/register] {:projects.api/symbol projects.handler/register
+                                                            :projects.api/db #ig/ref :projects.db/connection}
+  [:projects.api/api-resources :projects.handler/users] {:projects.api/symbol projects.handler/users
+                                                         :projects.api/db #ig/ref :projects.db/connection}
+  :projects.system/host {:port #or [#env BACKEND_SYSTEM_PORT 3000]
+                         :app #ig/ref :projects.routes/routes}
+  
+  
+  :projects.auth/authentication-middleware {:config #ig/ref :projects.auth/auth-config}
+
+  :projects.auth/auth-config {:secret #or [#env AUTH_SECRET "JWT_SECRET"]
+                              :token-name "Bearer"
+                              :exp #or [#env TOKEN_EXP 60]} ;experation of token in minutes, does not need to be an integer
+  
+  :projects.db/connection {:db-config 
+                           ; settings for docker-compose
+                           {:dbtype #or [#env DB_TYPE "postgresql"]
+                            :dbname #or [#env DB_NAME "clj_projects"]
+                            :host #or [#env DB_HOST "localhost"] ;"db" 
+                            :port #or [#env DB_PORT 1000] ;"5432"
+                            :user #or [#env DB_USER "postgres"]
+                            :password #or [#env DB_PASSWORD "secret"]}
+                           ; settings for k8s
+                           ;{:dbtype "postgresql"
+                           ; :dbname "clj_projects"
+                           ; :host "172.17.0.3"
+                           ; :port 32222
+                           ; :user "postgres"
+                           ; :password "secret"}
+                           }
+  :projects.routes/swagger-handler {}
+
+
+  
+  :projects.api-swagger/login {:handler #ig/ref :projects.handler/login}
+  :projects.api-swagger/register {}
+  :projects.api-swagger/users {}
+  :projects.api-swagger/ping {}
+  :projects.api-swagger/status {}
+  :projects.api-swagger/get-projects {}
+  :projects.api-swagger/put-project {}
+  :projects.api-swagger/get-project {}
+  :projects.api-swagger/post-project {}
+  :projects.api-swagger/delete-project {}
+  :projects.api-swagger/get-project-history {}
+
+  :projects.routes/routes {:routes [["/swagger.json"
+                                     {:get {:no-doc true
+                                            :swagger {:info {:title "Swagger Projects App"
+                                                             :description "This is a simple Project collction server"
+                                                             :version "1.0"
+                                                             :absePath "/"}}
+                                            :handler #ig/ref :projects.routes/swagger-handler}}]
+                                    ["/login"
+                                     {:post {:swagger #ig/ref :projects.api-swagger/login
+                                             :handler #ig/ref :projects.handler/login}}]
+                                    ["/register"
+                                     {:put {:swagger #ig/ref :projects.api-swagger/register
+                                            :handler #ig/ref :projects.handler/register}}]
+                                    ["" {:middleware #ig/ref :projects.auth/authentication-middleware}
+                                     ["/users"
+                                      {:get {:swagger #ig/ref :projects.api-swagger/users
+                                             :handler #ig/ref :projects.handler/users}}]
+                                     ["/api"
+                                      ["/ping"
+                                       {:get {:swagger #ig/ref :projects.api-swagger/ping
+                                              :handler #ig/ref :projects.handler/ping}}]
+                                      ["/status"
+                                       {:get {:swagger #ig/ref :projects.api-swagger/status
+                                              :handler #ig/ref :projects.handler/get-all-status}}
+                                       {:swagger {:tags ["Status"]}
+                                        :get #ig/ref :projects.handler/get-all-status}]
+                                      ["/project"
+                                       [""
+                                        {:get {:swagger #ig/ref :projects.api-swagger/get-projects
+                                               :handler #ig/ref :projects.handler/get-projects}
+                                         :put {:swagger #ig/ref :projects.api-swagger/put-project
+                                               :handler #ig/ref :projects.handler/put-project}}]
+                                       ["/:id" 
+                                        ["" 
+                                         {:get {:swagger #ig/ref :projects.api-swagger/get-project
+                                                :handler #ig/ref :projects.handler/get-project}
+                                          :post {:swagger #ig/ref :projects.api-swagger/post-project
+                                                 :handler #ig/ref :projects.handler/post-project}
+                                          :delete {:swagger #ig/ref :projects.api-swagger/delete-project
+                                                   :handler #ig/ref :projects.handler/delete-project}}]
+                                        ["/history"
+                                         ["" 
+                                           {:swagger #ig/ref :projects.api-swagger/get-project-history
+                                            :get {:handler #ig/ref :projects.handler/get-history}}]]]]]]]}}}

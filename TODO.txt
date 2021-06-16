@@ -1,0 +1,15 @@
+Saker ändra på i en befintliga koden
+
+1. Refactor - OK
+2. Swagger - OK
+3. Add .css files to nginx and check for more nginx config - OK
+4. Oero front and back - OK
+5. Add integrant and Aero to frontend - OK
+6. test docker-compose - OK
+7. test kubernetes -
+8. Unit tests - OK
+9. CI/CD pipeline - 
+
+
+
+
