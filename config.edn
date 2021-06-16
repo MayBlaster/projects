@@ -52,7 +52,7 @@
 
 
   
-  :projects.api-swagger/login {:handler #ig/ref :projects.handler/login}
+  :projects.api-swagger/login {}
   :projects.api-swagger/register {}
   :projects.api-swagger/users {}
   :projects.api-swagger/ping {}
@@ -67,10 +67,11 @@
   :projects.routes/routes {:routes [["/swagger.json"
                                      {:get {:no-doc true
                                             :swagger {:info {:title "Swagger Projects App"
-                                                             :description "This is a simple Project collction server"
+                                                             :description "This is a simple Project collection server"
                                                              :version "1.0"
-                                                             :absePath "/"}}
+                                                             :basePath "/"}}
                                             :handler #ig/ref :projects.routes/swagger-handler}}]
+                                    ["/backend"
                                     ["/login"
                                      {:post {:swagger #ig/ref :projects.api-swagger/login
                                              :handler #ig/ref :projects.handler/login}}]
@@ -87,9 +88,7 @@
                                               :handler #ig/ref :projects.handler/ping}}]
                                       ["/status"
                                        {:get {:swagger #ig/ref :projects.api-swagger/status
-                                              :handler #ig/ref :projects.handler/get-all-status}}
-                                       {:swagger {:tags ["Status"]}
-                                        :get #ig/ref :projects.handler/get-all-status}]
+                                              :handler #ig/ref :projects.handler/get-all-status}}]
                                       ["/project"
                                        [""
                                         {:get {:swagger #ig/ref :projects.api-swagger/get-projects
@@ -107,4 +106,4 @@
                                         ["/history"
                                          ["" 
                                            {:swagger #ig/ref :projects.api-swagger/get-project-history
-                                            :get {:handler #ig/ref :projects.handler/get-history}}]]]]]]]}}}
+                                            :get {:handler #ig/ref :projects.handler/get-history}}]]]]]]]]}}}

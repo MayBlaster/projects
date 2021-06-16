@@ -8,13 +8,13 @@
 
 (defnc project-display
   [{:keys [project]}]
-   (d/div
-    (d/p {:key 0}
-         (d/strong "Project: ")
-         (:name project))
-    (d/p {:key 1}
-         (d/strong "Current Status ")
-         (:status_name project))))
+  (d/div
+   (d/p {:key 0}
+        (d/strong "Project: ")
+        (:name project))
+   (d/p {:key 1}
+        (d/strong "Current Status ")
+        (:status_name project))))
 
 (defnc project-edit
   [{:keys [project]}]
@@ -30,35 +30,35 @@
                           (.preventDefault e)
                           (if (:id selected)
                             (backend/update-state update-project set-project-history state token set-message)
-                            (backend/add-state add-project set-project-history state token set-message)))}    
-     (if (nil? (:id state))
-       (<>
-        (d/p {:key 0}
-             (d/label {:for "name"}
-                      "New Project: ")
-             (d/input {:class '[shadow border rounded py-2 px-3 mb-3]
-                       :id "name"
-                       :value (:name state)
-                       :on-change #(set-state
-                                    (assoc state :name (.. %
-                                                           -target
-                                                           -value)))}))
-        (d/p {:key 1}
-             (d/strong "Status: ")
-             "Initiated"))
-       (<>
-        (d/p {:key 0}
-             (d/strong "Project: ")
-             (:name state))
-        (d/p {:key 1}
-             (d/strong "Current Status: ")
-             (:status_name state))
-        (d/p {:key 2}
-             (d/strong "Update Status to: ")
-             (next-status {:project state}))))
-     (d/button {:class '[bg-green-500 text-white px-1 py-1 rounded mb-2 mt-2]
-                :type "submit"}
-               "Submit"))))
+                            (backend/add-state add-project set-project-history state token set-message)))}
+            (if (nil? (:id state))
+              (<>
+               (d/p {:key 0}
+                    (d/label {:for "name"}
+                             "New Project: ")
+                    (d/input {:class '[shadow border rounded py-2 px-3 mb-3]
+                              :id "name"
+                              :value (:name state)
+                              :on-change #(set-state
+                                           (assoc state :name (.. %
+                                                                  -target
+                                                                  -value)))}))
+               (d/p {:key 1}
+                    (d/strong "Status: ")
+                    "Initiated"))
+              (<>
+               (d/p {:key 0}
+                    (d/strong "Project: ")
+                    (:name state))
+               (d/p {:key 1}
+                    (d/strong "Current Status: ")
+                    (:status_name state))
+               (d/p {:key 2}
+                    (d/strong "Update Status to: ")
+                    (next-status {:project state}))))
+            (d/button {:class '[bg-green-500 text-white px-1 py-1 rounded mb-2 mt-2]
+                       :type "submit"}
+                      "Submit"))))
 
 (defnc project-form []
   (let [[edit set-edit] (hooks/use-state false)

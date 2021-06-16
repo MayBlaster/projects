@@ -1,0 +1,11 @@
+.DS_Store
+.calva/
+.cpcache/
+.lsp/
+*.txt
+minikube-linux-amd64
+.clj-kondo/.cache/
+.shadow-cljs/
+node_modules/
+resources/public/js/
+projects-backend.yaml

@@ -1,4 +1,4 @@
-{:paths ["src/clj" "src" "resource"]
+{:paths ["src/clj" "src/cljs" "resource" "test"]
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
         http-kit/http-kit {:mvn/version "2.4.0"}
         metosin/reitit {:mvn/version "0.5.5"}
@@ -27,4 +27,6 @@
            :test {:extra-paths ["test"]
                   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.732"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}}
-                  :main-opts ["-m" "kaocha.runner"]}}}
+                  :main-opts ["-m" "kaocha.runner"]}
+           :format {:extra-deps {cljfmt {:mvn/version "0.6.4"}}
+                    :main-opts ["-m" "cljfmt.main" "fix" "src/"]}}}

@@ -11,8 +11,7 @@
 
 (def app-state (create-context nil))
 
-
-(defmulti app-reducer 
+(defmulti app-reducer
   (fn [_ action]
     (first action)))
 
@@ -68,14 +67,13 @@
   ::sign-out [_ _]
   initial-state)
 
-
 (defn use-app-state []
   (let [[state dispatch] (hooks/use-context app-state)]
     [state {:set-projects #(dispatch [::set-projects %])
             :set-project-history #(dispatch [::set-project-history %])
             :set-selected #(dispatch [::set-selected %])
             :remove-project #(dispatch [::remove-project %])
-            :add-project (fn [event] 
+            :add-project (fn [event]
                            (dispatch [::add-project event])
                            (dispatch [::set-selected nil]))
             :new-project #(dispatch [::new-project nil])

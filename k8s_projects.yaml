@@ -1,0 +1,245 @@
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  DB_TYPE: postgresql
+  DB_NAME: clj_projects
+  DB_HOST: "172.17.0.3"
+  DB_PORT: "32222"
+  DB_USER: postgres
+  DB_PASSWORD: secret
+  BACKEND_SYSTEM_PORT: "32000"
+  BACKEND_HOST: "172.17.0.3"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  selector:
+    app: postgres
+  type: NodePort
+  ports:
+  - port: 1000
+    name: postgres-port
+    targetPort: 5432
+    nodePort: 32222
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend.projects.ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /backend
+            pathType: Prefix
+            backend:
+              service: 
+                name: backend-svc
+                port:
+                  number: 3000
+          - path: /swagger.json
+            pathType: Prefix
+            backend:
+              service: 
+                name: backend-svc
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-svc
+                port:
+                  number: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: backend
+  name: backend-svc
+  namespace: default
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      name: backend-port
+      targetPort: 3000
+      nodePort: 32000
+  selector:
+    app: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend-svc
+  namespace: default
+spec:
+  ports:
+    - port: 8080
+      name: frontend-port
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: frontend
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-sfs
+  labels:
+    app: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: "postgresql"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: denniskaranda/projects-postgress
+        env:
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_NAME
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_PASSWORD
+        ports:
+        - containerPort: 5432
+          name: postgres-port
+        volumeMounts:
+        - mountPath: "/var/lib/postgresql/data"
+          name: postgres-storage
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: projects-backend
+        image: denniskaranda/projects-backend:latest
+        #image: projects/backend
+        #imagePullPolicy: Never
+        env:
+          - name: DB_TYPE
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_TYPE
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_NAME
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_HOST
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_PORT
+          - name: DB_USER
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_USER
+          - name: DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_PASSWORD
+        command: 
+        - "java" 
+        - "-cp" 
+        - "uber.jar" 
+        - "clojure.main" 
+        - "-m" 
+        - "projects.system"
+        ports:
+        - containerPort: 3000
+          name: backend-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: projects-frontend
+        image: denniskaranda/projects-frontend:latest
+        #image: projects/frontend
+        #imagePullPolicy: Never
+        env:
+          - name: BACKEND_SYSTEM_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: BACKEND_SYSTEM_PORT
+          - name: BACKEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: BACKEND_HOST
+        command:
+        - "./start.sh"
+        ports:
+        - containerPort: 8080
+          name: frontend-port

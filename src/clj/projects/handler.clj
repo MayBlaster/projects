@@ -20,15 +20,15 @@
     (cond
       (vector? response) (->> response
                               (map convert-time))
-      
+
       (map? response) (->> response
                            (timestamp-to-date)
                            (assoc response :timestamp))
-      
+
       (nil? response) (assoc {} :error "Given Id does not exists")
 
       (string? response) (assoc {} :error response)
-      
+
       :else "project-timestamp-to-date got unkown type")))
 
 (defn get-all-status

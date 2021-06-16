@@ -6,7 +6,6 @@
             [projects.components.state :refer [use-app-state]]
             [projects.components.project-list :refer [project-list]]))
 
-
 (defnc projects []
   (let [[app-state actions] (use-app-state)
         set-projects (:set-projects actions)

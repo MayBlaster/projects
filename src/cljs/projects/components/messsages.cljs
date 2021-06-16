@@ -1,6 +1,5 @@
 (ns projects.components.messsages)
 
-
 (def auth-fail "Authentication failed, check username or password")
 
 (def auth-success "Authentication successful")
@@ -12,11 +11,11 @@
   (str "Username " username " have been added"))
 
 (defn put-project-fail
-  [projects-name]
-  (str "Project " projects-name " already exist, choose aonther project name"))
+  [error]
+  (str error " , choose aonther project name"))
 
 (defn put-project-success
- [project-name]
+  [project-name]
   (str "Project " project-name " has been added"))
 
 (def post-project-success "Project updated")

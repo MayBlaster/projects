@@ -21,8 +21,7 @@
     routes
     {:data {:coercion reitit.coercion.schema/coercion
             :muuntaja m/instance
-            :middleware [
-                         [wrap-cors
+            :middleware [[wrap-cors
                           :access-control-allow-origin [#".*"] ; to allow all access #".*" for docker-compose #"http://localhost:8080"
                           :access-control-allow-methods [:get :put :post :delete]]
                          format-negotiate-middleware
@@ -34,7 +33,7 @@
                          ;coerce-exceptions-middleware
                          swagger/swagger-feature]}})
    (ring/routes
-    (swagger-ui/create-swagger-ui-handler {:path "/"})
+    (swagger-ui/create-swagger-ui-handler {:path "/backend/doc"})
     (ring/redirect-trailing-slash-handler {:method :both})
     (ring/create-default-handler
      (:not-found (constantly {:status 404

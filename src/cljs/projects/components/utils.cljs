@@ -1,6 +1,5 @@
 (ns projects.components.utils)
 
-
 (defn next-status
   [{:keys [project]}]
   (cond
