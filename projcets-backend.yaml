@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  # labels: require a key-value pair could be what ever, this is for deployment
+  # to know what pods to deploy
+  labels:
+    app: backend
+
+spec:
+  replicas: 2
+  selector:
+    # This is the name of deployment for services to use 
+    matchLabels:
+      app: backend
+  template: 
+    metadata:
+      # Here are the name of the pod, which deployment can use
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: projects-backed
+        # Create a docker container with the name "projects/backend" for 
+        # k8s to use it
+        # however to use this run the command $ eval $(minikube -p minikube docker-env)
+        image: projects/backend
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 3000
+        #command: ["java"]
+        #args: ["-cp", "target/uber.jar", "clojure.main", "-m", "projects.system"]
+        #java -cp target/uber.jar clojure.main -m projects.system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      # This is the port that Service is listening
+      port: 3333
+      # This port must be the same as in containerProt
+      targetPort: 3000

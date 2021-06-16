@@ -1,0 +1,62 @@
+version: '2'
+services:
+  db:
+    container_name: clj_projects_db
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - 1000:5432
+    volumes:
+      - ./sql/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+    networks:
+      - project_back
+
+  backend:
+    container_name: clj_projects_backend
+    image: clj_projects_backend:latest
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    environment:
+      - DB_TYPE
+      - DB_NAME
+      - DB_HOST
+      - DB_PORT
+      - DB_USER
+      - DB_PASSWORD
+      - BACKEND_SYSTEM_PORT
+    ports: 
+      - 3000:3000
+    command: ["java", "-cp", "uber.jar", "clojure.main", "-m", "projects.system"]
+    #command: ["sh", "-c", "tail -f /dev/null"]
+    networks:
+      - project_back
+
+  frontend:
+    container_name: clj_projects_frontend
+    image: clj_projects_frontend:latest
+    build: 
+      context: .
+      dockerfile: frontend.dockerfile
+    environment: 
+      - BACKEND_SYSTEM_PORT
+      - BACKEND_HOST
+    ports:
+      - 8080:80
+      - 4200:4200
+    networks:
+      - project_back
+    #command: ["sh", "-c", "tail -f /dev/null"]
+    command: ["nginx-debug", "-g", "daemon off;"]
+    #command: ["./start.sh"]
+
+networks: 
+  project_back:
+    driver: bridge
+
+    #java -cp target/uber.jar clojure.main -m projects.system
+    #clojure -A:package -m projects.package
+    # cljs example https://www.youtube.com/watch?v=BhJOPBMbnt8&list=PLRoUFLqvFD3MRYXTnXQyl-z_svY2gDhFi&t=1652s

@@ -1,0 +1,58 @@
+Some good to know---------------------------------------------------------
+
+To allow all connections to backend use CORS :access-control-allow-origin [#".*"]
+
+To compile backend code 
+$ clojure -A:package -m projects.package
+
+To compile frontend code 
+$ ./node_modules/.bin/shadow-cljs compile projects
+However this does not quite work for kubernetes, maybe something with the docker image
+it does not copy in the new compiled code.
+
+
+Docker-Compose------------------------------------------------------------
+
+Backend CORS should allow http://localhost:8080
+
+Backend to connect to database use localhost and the internal port. The 
+port that is exposed from the parent postgres image.
+
+To run docker compose-compose. Go to ./projects and run 
+$ docker-compose up --build
+This will start the nginx and frontend automatically, however backend needs to be started manually.
+By entering the nginx container and running 
+$ java -cp target/uber.jar clojure.main -m projects.system.
+
+Kubernetes----------------------------------------------------------------
+
+In Kubernetes one does not use localhost to access the cluster containers
+instead one use the minikube's ip. One can find it by running 
+$ minikube ip
+
+In order to connect to a Node use the syntax NodeIP:nodePort
+
+Backend CORS should allow http://172.17.0.3:32220 , maybe?
+
+Backend to connect to database use minikube ip (172.17.0.3) and the node port.
+
+Kubernetes can't copy volume from local disk space, that is why we are using
+docker images to copy the relevant files and create docker images. Then running
+those images in kubernetes. In order to use local docker images 
+run 
+$ eval $(minikube -p minikube docker-env) for kubernetes to access the local
+docker images. Next create image in ./ 
+run 
+$ docker build -t projects/database -f docker-postgres.dockerfile .
+and run 
+$ docker build -t projects/front-backend -f docker-backend.dockerfile .
+To start kubernetes run 
+$ kubctl apply -f postgres-db.yaml
+This will start the nginx and frontend automatically, however backend needs to be started manually.
+By entering the nginx container by running 
+$ kubctl get pods
+and to enter a pod run
+$ kubctl exec -it <pod-name> -- sh
+and inside the pod run
+$ java -cp target/uber.jar clojure.main -m projects.system
+
