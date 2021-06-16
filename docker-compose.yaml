@@ -50,7 +50,7 @@ services:
     networks:
       - project_back
     #command: ["sh", "-c", "tail -f /dev/null"]
-    command: ["nginx-debug", "-g", "daemon off;"]
+    command: ["nginx", "-g", "daemon off;"]
     #command: ["./start.sh"]
 
 networks: 
