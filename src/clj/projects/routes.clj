@@ -34,7 +34,7 @@
                          ;coerce-exceptions-middleware
                          swagger/swagger-feature]}})
    (ring/routes
-    (swagger-ui/create-swagger-ui-handler {:path "/doc"})
+    (swagger-ui/create-swagger-ui-handler {:path "/backend/doc"})
     (ring/redirect-trailing-slash-handler {:method :both})
     (ring/create-default-handler
      (:not-found (constantly {:status 404

@@ -55,20 +55,13 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /backend
             pathType: Prefix
             backend:
               service: 
                 name: backend-svc
                 port:
                   number: 3000
-          #- path: /backend
-          #  pathType: Prefix
-          #  backend:
-          #    service: 
-          #      name: backend-svc
-          #      port:
-          #        number: 3000
 ---
 apiVersion: v1
 kind: Service
