@@ -1,17 +1,4 @@
-#connect to backend http://172.17.0.3:32220/api/status
-#connect to frontend http://172.17.0.3:32221/
-#compilera front-end,s om det är nu så ändras inte förfrågan till backend
-#psql -h 172.17.0.3 -U postgresadmin -p 32222 -W postgresdb
-#172.17.0.3 = $ minikube ip
-#printenv to print all enviroment variables inside a container
-#TargetPort: This is the actual port on which your application is running inside the container.
-#
-#Port: Some times your application inside container serves different services on a different port.
-#
-#Example: The actual application can run 8080 and health checks for this application can run on 8089 
-#        port of the container. So if you hit the service without port it doesn't know to which port 
-#        of the container it should redirect the request. Service needs to have a mapping so that it 
-#        can hit the specific port of the container.
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
