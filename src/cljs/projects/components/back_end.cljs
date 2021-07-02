@@ -9,13 +9,13 @@
 
 (defn delete-project
   [remove-project project token]
-  (DELETE (str "http://" (:host @conn) ":" (:port @conn) "/api/project/" (:id project))
+  (DELETE (str "http://" (:host @conn) ":" (:port @conn) "/backend/api/project/" (:id project))
     {:headers {"authorization" (str "Bearer " token)}
      :handler #(remove-project project)}))
 
 (defn register-user 
   [user alert-action]
-  (PUT (str "http://" (:host @conn) ":" (:port @conn) "/register")
+  (PUT (str "http://" (:host @conn) ":" (:port @conn) "/backend/register")
     :format :json
     :params user 
     :handler (fn [response]
@@ -27,7 +27,7 @@
 
 (defn autheticate-user
   [user autheticate-action alert-action]
-  (POST (str "http://" (:host @conn)":" (:port @conn) "/login")
+  (POST (str "http://" (:host @conn)":" (:port @conn) "/backend/login")
     {:format :json
      :params user
      :handler (fn [response]
@@ -41,7 +41,7 @@
 
 (defn get-projects
   [set-projects token]
-  (GET (str "http://" (:host @conn) ":" (:port @conn) "/api/project")
+  (GET (str "http://" (:host @conn) ":" (:port @conn) "/backend/api/project")
     {:headers {"authorization" (str "Bearer " token)}
      :handler (fn [response]
                 (set-projects response))}))
@@ -50,7 +50,7 @@
   [state token]
   (p/promise
    (fn [resolve reject]
-     (POST (str "http://" (:host @conn) ":" (:port @conn) "/api/project/" (:id state))
+     (POST (str "http://" (:host @conn) ":" (:port @conn) "/backend/api/project/" (:id state))
        {:format :json
         :headers {"authorization" (str "Bearer " token)}
         :params {:status (next-status {:project state})}
@@ -59,7 +59,7 @@
 
 (defn get-history
   [handler state token]
-  (GET (str "http://" (:host @conn) ":" (:port @conn) "/api/project/" (:id state) "/history")
+  (GET (str "http://" (:host @conn) ":" (:port @conn) "/backend/api/project/" (:id state) "/history")
     {:headers {"authorization" (str "Bearer " token)}
      :handler #(handler %)}))
 
@@ -67,7 +67,7 @@
   [state token]
   (p/promise
    (fn [resolve reject]
-     (PUT (str "http://" (:host @conn) ":" (:port @conn) "/api/project")
+     (PUT (str "http://" (:host @conn) ":" (:port @conn) "/backend/api/project")
        {:format :json
         :headers {"authorization" (str "Bearer " token)}
         :params {:name (:name state)

@@ -23,12 +23,8 @@ data:
   DB_PORT: "32222"
   DB_USER: postgres
   DB_PASSWORD: secret
-  BACKEND_SYSTEM_PORT: "32220"
+  BACKEND_SYSTEM_PORT: "32000"
   BACKEND_HOST: "172.17.0.3"
-
-  #POSTGRES_DB: clj_projects
-  #POSTGRES_USER: postgres
-  #POSTGRES_PASSWORD: secret
 ---
 apiVersion: v1
 kind: Service
@@ -62,6 +58,13 @@ spec:
                 name: backend-svc
                 port:
                   number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-svc
+                port:
+                  number: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -71,18 +74,30 @@ metadata:
   name: backend-svc
   namespace: default
 spec:
+  type: NodePort
   ports:
     - port: 3000
       name: backend-port
-      protocol: TCP
       targetPort: 3000
-    #- port: 80
-    #  name: frontend-port
-    #  targetPort: 80
-    #  nodePort: 32221
+      nodePort: 32000
   selector:
     app: backend
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: frontend
+  name: frontend-svc
+  namespace: default
+spec:
+  ports:
+    - port: 8080
+      name: frontend-port
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: frontend
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -104,7 +119,6 @@ spec:
       containers:
       - name: postgres
         image: denniskaranda/projects-postgress
-        #imagePullPolicy: Never
         env:
           - name: POSTGRES_DB
             valueFrom:
@@ -155,6 +169,7 @@ spec:
       containers:
       - name: projects-backend
         image: denniskaranda/projects-backend:latest
+        #image: projects/backend
         #imagePullPolicy: Never
         env:
           - name: DB_TYPE
@@ -187,20 +202,6 @@ spec:
               configMapKeyRef:
                 name: postgres-config
                 key: DB_PASSWORD
-          #- name: BACKEND_SYSTEM_PORT
-          #  valueFrom:
-          #    configMapKeyRef:
-          #      name: postgres-config
-          #      key: BACKEND_SYSTEM_PORT
-          - name: BACKEND_HOST
-            valueFrom:
-              configMapKeyRef:
-                name: postgres-config
-                key: BACKEND_HOST
-        #command: 
-        #- "nginx-debug"
-        #- "-g"
-        #- "daemon off;"
         command: 
         - "java" 
         - "-cp" 
@@ -208,12 +209,44 @@ spec:
         - "clojure.main" 
         - "-m" 
         - "projects.system"
-        #command:
-        #- "sh"
-        #- "-c"
-        #- "tail -f /dev/null"
         ports:
         - containerPort: 3000
           name: backend-port
-        #- containerPort: 80
-        #  name: frontend-port
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: projects-frontend
+        image: denniskaranda/projects-backend:latest
+        #image: projects/frontend
+        #imagePullPolicy: Never
+        env:
+          - name: BACKEND_SYSTEM_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: BACKEND_SYSTEM_PORT
+          - name: BACKEND_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: BACKEND_HOST
+        command:
+        - "./start.sh"
+        ports:
+        - containerPort: 8080
+          name: frontend-port
