@@ -1,6 +1,5 @@
 (ns projects.components.events)
 
-
 (defn set-color
   [i]
   (if (odd? i)

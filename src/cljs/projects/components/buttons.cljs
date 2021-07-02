@@ -4,7 +4,6 @@
             ["react-router-dom" :as rr]
             [helix.dom :as d]))
 
-
 (defn on-click-select
   [on-click-response projects action token]
   (let [index (- (.. on-click-response
@@ -19,7 +18,6 @@
     (backend/get-history set-project-history project token)
     (set-selected project)))
 
-
 (defn on-click-delete
   [on-click-response projects action token]
   (let [index (- (.. on-click-response
@@ -31,8 +29,6 @@
         remove-project (:remove-project action)
         project (nth projects index)]
     (backend/delete-project remove-project project token)))
-
-
 
 (defnc login-project-buttons-component
   [{:keys [user]}]

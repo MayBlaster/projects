@@ -6,13 +6,12 @@
             [projects.components.project-table :refer [project-table]]
             [projects.components.project-form :refer [project-form]]))
 
-
 (defnc project-list []
-   (let [[app-state action] (use-app-state)
-         token (:token app-state)
-         projects (:projects app-state)
-         project-history (:project-history app-state)
-         columns (->> projects
+  (let [[app-state action] (use-app-state)
+        token (:token app-state)
+        projects (:projects app-state)
+        project-history (:project-history app-state)
+        columns (->> projects
                      (first)
                      (keys)
                      (remove #(= :id %)))]
@@ -21,10 +20,10 @@
                            :width "50%"
                            :margin-right "20px"}}
                   ($ project-table {:columns columns
-                                    :projects projects 
+                                    :projects projects
                                     :action action
                                     :token token})
                   ($ project-form))
-     (if (empty? project-history)
-       (d/p "Click on a project to view project history")
-       ($ display-history {:project-history project-history})))))
+           (if (empty? project-history)
+             (d/p "Click on a project to view project history")
+             ($ display-history {:project-history project-history})))))

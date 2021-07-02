@@ -21,8 +21,7 @@
     routes
     {:data {:coercion reitit.coercion.schema/coercion
             :muuntaja m/instance
-            :middleware [
-                         [wrap-cors
+            :middleware [[wrap-cors
                           :access-control-allow-origin [#".*"] ; to allow all access #".*" for docker-compose #"http://localhost:8080"
                           :access-control-allow-methods [:get :put :post :delete]]
                          format-negotiate-middleware

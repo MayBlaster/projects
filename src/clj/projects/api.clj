@@ -23,7 +23,6 @@
                         :body {:message (.getMessage e)
                                :trace (pr-str e)}})))
 
-
 (defn- api-login-resources
   [opts]
   (let [sym (::symbol opts)
@@ -44,12 +43,10 @@
                            (assoc :db db)
                            (assoc :ctx ctx))))))
 
-
 (defmethod ig/init-key ::api-resources
   [_ opts]
     ;(assoc opts :handler )
   (api-resources opts))
-
 
 (defmethod ig/init-key ::api-login-resources
   [_ opts]

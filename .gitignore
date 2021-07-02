@@ -3,7 +3,6 @@
 .cpcache/
 .lsp/
 *.txt
-start.sh
 minikube-linux-amd64
 .clj-kondo/.cache/
 .shadow-cljs/

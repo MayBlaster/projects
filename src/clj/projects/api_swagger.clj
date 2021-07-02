@@ -1,7 +1,6 @@
 (ns projects.api-swagger
   (:require [integrant.core :as ig]))
 
-
 (defmethod ig/init-key ::login
   [_ {:keys [handler]}]
   (-> {}
@@ -27,7 +26,6 @@
                          :202 {:description "Fail response"
                                :schema {:type "object"
                                         :properties {:error {:type "string"}}}}})))
-
 
 (defmethod ig/init-key ::register
   [_ _]
@@ -57,6 +55,11 @@
       (assoc :tags ["Users"])
       (assoc :description "Get all current Users")
       (assoc :summary "Get all Users")
+      (assoc :parameters [{:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :respnses {:200 {:description "Success response"
                               :schema {:type "array"
                                        :items {:properties {:username {:type "string"}
@@ -71,14 +74,16 @@
       (assoc :tags ["Ping"])
       (assoc :description "Ping api to test connection")
       (assoc :summary "Ping server")
+      (assoc :parameters [{:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :respnses {:200 {:description "Success response"
                               :type "string"}
                         :401 {:description "Fail response"
                               :schema {:type "object"
                                        :properties {:error {:type "string"}}}}})))
-
-
-
 
 (defmethod ig/init-key ::status
   [_ _]
@@ -86,6 +91,11 @@
       (assoc :tags ["Status"])
       (assoc :description "Get all avialable Statuses on projects")
       (assoc :summary "Get all Statuses")
+      (assoc :parameters [{:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :respnses {:200 {:description "Success response"
                               :type "object"
                               :properties {:status_name {:type "string"
@@ -100,6 +110,11 @@
       (assoc :tags ["Project"])
       (assoc :description "Get all existing Projects")
       (assoc :summary "Get Projects")
+      (assoc :parameters [{:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :responses {:200 {:description "Success response"
                                :schema {:type "object"
                                         :properties {:id {:type "string"
@@ -125,7 +140,12 @@
                            :schema {:type "object"
                                     :properties {:name {:type "string"}
                                                  :status {:type "string"}}
-                                    :required [:name :status]}}])
+                                    :required [:name :status]}}
+                          {:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :responses {:200 {:description "Success response"
                                :schema {:type "object"
                                         :properties {:id {:type "string"
@@ -149,8 +169,12 @@
                            :name "id"
                            :type "string"
                            :format "uuid"
+                           :required true}
+                          {:in "header"
+                           :name "Authorization"
                            :required true
-                           }])
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :responses {:200 {:description "Success response"
                                :schema {:type "object"
                                         :properties {:id {:type "string"
@@ -162,7 +186,6 @@
                          :401 {:description "Fail response"
                                :schema {:type "object"
                                         :properties {:error {:type "string"}}}}})))
-
 
 (defmethod ig/init-key ::post-project
   [_ _]
@@ -180,7 +203,12 @@
                            :description "Updated Project"
                            :schema {:type "object"
                                     :properties {:status {:type "string"}}
-                                    :required [:status]}}])
+                                    :required [:status]}}
+                          {:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :responses {:200 {:description "Success response"
                                :schema {:type "object"
                                         :properties {:id {:type "string"
@@ -193,7 +221,6 @@
                                :schema {:type "object"
                                         :properties {:error {:type "string"}}}}})))
 
-
 (defmethod ig/init-key ::delete-project
   [_ _]
   (-> {}
@@ -205,7 +232,12 @@
                            :name "id"
                            :type "string"
                            :format "uuid"
-                           :required true}])
+                           :required true}
+                          {:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :responses {:200 {:description "Success response"
                                :schema {:type "object"
                                         :properties {:id {:type "string"
@@ -221,12 +253,17 @@
 (defmethod ig/init-key ::get-project-history
   [_ _]
   (-> {}
-      (assoc :tags ["Hist"])
+      (assoc :tags ["Project History"])
       (assoc :parameters [{:in "path"
                            :name "id"
                            :type "string"
                            :format "uuid"
-                           :required true}])
+                           :required true}
+                          {:in "header"
+                           :name "Authorization"
+                           :required true
+                           :schema {:type "string"
+                                    :example "Bearer eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6IkVaVk5SRUtHV0tJTVR"}}])
       (assoc :description "Get a existing Project history")
       (assoc :summary "Get Project history")
       (assoc :responses {:200 {:description "Success response"
