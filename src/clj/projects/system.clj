@@ -11,30 +11,26 @@
   []
   (ae/read-config "config.edn"))
 
-
 (defn system-config []
   (let [config (get-config)
         sys-config (:projects/system config)]
     (ig/load-namespaces sys-config)
     (ig/prep sys-config)))
 
-
 (defmethod ig/init-key ::host
   [_ {:keys [port app]}]
   (let [nbr-port (if (string? port)
                    (Integer/parseInt port)
                    port)]
-  (println "server is running!")
-  (run-server app {:port nbr-port})))
-  
-
+    (println "server is running!")
+    (run-server app {:port nbr-port})))
 
 (defmethod ig/halt-key! ::host
   [_ server]
   (server :timeout 100))
 
 (defn exec-config []
-  (-> (system-config) 
+  (-> (system-config)
       (ig/init)))
 
 (defn -main []

@@ -13,11 +13,11 @@
     {:headers {"authorization" (str "Bearer " token)}
      :handler #(remove-project project)}))
 
-(defn register-user 
+(defn register-user
   [user alert-action]
   (PUT (str "http://" (:host @conn) ":" (:port @conn) "/backend/register")
     :format :json
-    :params user 
+    :params user
     :handler (fn [response]
                (if (contains? response :error)
                  (alert-action {:status false
@@ -27,7 +27,7 @@
 
 (defn autheticate-user
   [user autheticate-action alert-action]
-  (POST (str "http://" (:host @conn)":" (:port @conn) "/backend/login")
+  (POST (str "http://" (:host @conn) ":" (:port @conn) "/backend/login")
     {:format :json
      :params user
      :handler (fn [response]
@@ -101,7 +101,6 @@
                   (add- add-project set-project-history response token alert-action))))
       (p/catch (fn [error]
                  (js/console.log "error in promisa" error)))))
-
 
 (defn update-state
   [update-project set-project-history state token alert-action]

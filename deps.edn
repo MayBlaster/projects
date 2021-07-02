@@ -27,4 +27,6 @@
            :test {:extra-paths ["test"]
                   :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.732"}
                                lambdaisland/kaocha-cloverage {:mvn/version "1.0.75"}}
-                  :main-opts ["-m" "kaocha.runner"]}}}
+                  :main-opts ["-m" "kaocha.runner"]}
+           :format {:extra-deps {cljfmt {:mvn/version "0.6.4"}}
+                    :main-opts ["-m" "cljfmt.main" "fix" "src/"]}}}

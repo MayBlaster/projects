@@ -4,10 +4,7 @@
             [buddy.sign.jwt :as jwt]
             [buddy.auth :refer [authenticated?]]
             [integrant.core :as ig]
-            [clj-time.core :as t]
-            [clj-time.coerce :as c]))
-
-;(def jwt-secret "JWT_SECRET")
+            [clj-time.core :as t]))
 
 (defonce *token (atom {}))
 
@@ -17,10 +14,10 @@
 (defn create-token
   [exp]
   (let [exp (->> exp
-                (t/minutes)
-             (t/plus (t/now)))]
-  (jwt/sign {:token (rand-str 36)
-             :exp exp} (get @*token :token))))
+                 (t/minutes)
+                 (t/plus (t/now)))]
+    (jwt/sign {:token (rand-str 36)
+               :exp exp} (get @*token :token))))
 
 (defn authetication-middleware
   [handler]

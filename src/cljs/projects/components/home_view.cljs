@@ -4,9 +4,6 @@
             [projects.components.buttons :refer [login-project-buttons-component]]
             [helix.dom :as d]))
 
-
-
-
 (defnc home-page []
   (let [[app-state _] (use-app-state)
         user (:user app-state)]

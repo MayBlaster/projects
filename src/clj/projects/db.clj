@@ -26,7 +26,7 @@
       (assoc :status_id status)
       (dissoc :status)))
 
-(defn insert-project-history 
+(defn insert-project-history
   [project db]
   (let [updated-project (-> project
                             (dissoc :status_name)
@@ -37,8 +37,8 @@
               [c (keys updated-project)]
                (keyword c))
         query (sql/format {:insert-into :projects_history
-                   :columns cols
-                   :values [(vals updated-project)]})]
+                           :columns cols
+                           :values [(vals updated-project)]})]
     (jdbc/execute-one! db query {})))
 
 (defn insert-new-project
@@ -51,7 +51,7 @@
                            :values [(vals project)]})]
     (insert-project-history project db)
     (jdbc/execute-one! db query {:return-keys true
-                             :builder-fn rs/as-unqualified-lower-maps})))
+                                 :builder-fn rs/as-unqualified-lower-maps})))
 
 (defn get-all-status
   [db]
@@ -115,7 +115,7 @@
                    (sql/format))]
     (jdbc/execute-one! db query {})
     (insert-project-history next-project db)
-    (get-project (:id next-project) db))) 
+    (get-project (:id next-project) db)))
 
 (defmulti validate-new-status
   (fn [project _ _] (:status_name project)))
@@ -142,13 +142,13 @@
     (str "Approved status, can not advance to " next-status)))
 
 (defmethod validate-new-status :default [_ next-status _]
-    (str next-status " status is not recognized"))
+  (str next-status " status is not recognized"))
 
 (defn update-project
   [id status db]
-    (-> id
-        (get-project db)
-        (validate-new-status status db)))
+  (-> id
+      (get-project db)
+      (validate-new-status status db)))
 
 (defn remove-project
   [project db]
@@ -236,7 +236,6 @@
     (if (empty? (filter #(= (:username %) username) users))
       (add-user username password email db)
       nil)))
-
 
 (defmethod ig/init-key ::connection
   [_ config]

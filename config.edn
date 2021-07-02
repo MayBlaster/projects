@@ -64,7 +64,7 @@
   :projects.api-swagger/delete-project {}
   :projects.api-swagger/get-project-history {}
 
-  :projects.routes/routes {:routes [["/backend/swagger.json"
+  :projects.routes/routes {:routes [["/swagger.json"
                                      {:get {:no-doc true
                                             :swagger {:info {:title "Swagger Projects App"
                                                              :description "This is a simple Project collection server"

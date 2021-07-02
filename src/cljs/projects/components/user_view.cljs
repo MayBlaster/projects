@@ -3,7 +3,6 @@
             [helix.dom :as d]
             ["react-router-dom" :as rr]))
 
-
 (defnc view-user []
   (let [user-id (.. (rr/useParams)
                     -id)]
