@@ -16,10 +16,10 @@ services:
 
   backend:
     container_name: clj_projects_backend
-    image: clj_projects_backend:latest
-    build:
-      context: .
-      dockerfile: backend.dockerfile
+    image: denniskaranda/projects-backend:latest
+    #build:
+    #  context: .
+    #  dockerfile: backend.dockerfile
     environment:
       - DB_TYPE
       - DB_NAME
@@ -36,10 +36,10 @@ services:
 
   frontend:
     container_name: clj_projects_frontend
-    image: clj_projects_frontend:latest
-    build:
-      context: .
-      dockerfile: frontend.dockerfile
+    image: denniskaranda/projects-frontend:latest
+    #build:
+    #  context: .
+    #  dockerfile: frontend.dockerfile
     environment:
       - BACKEND_SYSTEM_PORT
       - BACKEND_HOST

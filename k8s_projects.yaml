@@ -161,9 +161,9 @@ spec:
     spec:
       containers:
       - name: projects-backend
-        #image: denniskaranda/projects-backend:latest
-        image: projects/backend
-        imagePullPolicy: Never
+        image: denniskaranda/projects-backend:latest
+        #image: projects/backend
+        #imagePullPolicy: Never
         env:
           - name: DB_TYPE
             valueFrom:
@@ -224,9 +224,9 @@ spec:
     spec:
       containers:
       - name: projects-frontend
-        #image: denniskaranda/projects-backend:latest
-        image: projects/frontend
-        imagePullPolicy: Never
+        image: denniskaranda/projects-frontend:latest
+        #image: projects/frontend
+        #imagePullPolicy: Never
         env:
           - name: BACKEND_SYSTEM_PORT
             valueFrom:
