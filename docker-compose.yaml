@@ -14,41 +14,41 @@ services:
     networks:
       - project_back
 
-  #backend:
-  #  container_name: clj_projects_backend
-  #  image: clj_projects_backend:latest
-  #  build:
-  #    context: .
-  #    dockerfile: backend.dockerfile
-  #  environment:
-  #    - DB_TYPE
-  #    - DB_NAME
-  #    - DB_HOST
-  #    - DB_PORT
-  #    - DB_USER
-  #    - DB_PASSWORD
-  #    - BACKEND_SYSTEM_PORT
-  #  ports: 
-  #    - 3000:3000
-  #  command: ["java", "-cp", "uber.jar", "clojure.main", "-m", "projects.system"]
-  #  networks:
-  #    - project_back
-#
-  #frontend:
-  #  container_name: clj_projects_frontend
-  #  image: clj_projects_frontend:latest
-  #  build: 
-  #    context: .
-  #    dockerfile: frontend.dockerfile
-  #  environment: 
-  #    - BACKEND_SYSTEM_PORT
-  #    - BACKEND_HOST
-  #  ports:
-  #    - 8080:80
-  #    - 4200:4200
-  #  networks:
-  #    - project_back
-  #  command: ["./start.sh"]
+  backend:
+    container_name: clj_projects_backend
+    image: clj_projects_backend:latest
+    build:
+      context: .
+      dockerfile: backend.dockerfile
+    environment:
+      - DB_TYPE
+      - DB_NAME
+      - DB_HOST
+      - DB_PORT
+      - DB_USER
+      - DB_PASSWORD
+      - BACKEND_SYSTEM_PORT
+    ports:
+      - 3000:3000
+    command: ["java", "-cp", "uber.jar", "clojure.main", "-m", "projects.system"]
+    networks:
+      - project_back
+
+  frontend:
+    container_name: clj_projects_frontend
+    image: clj_projects_frontend:latest
+    build:
+      context: .
+      dockerfile: frontend.dockerfile
+    environment:
+      - BACKEND_SYSTEM_PORT
+      - BACKEND_HOST
+    ports:
+      - 8080:8080
+      - 4200:4200
+    networks:
+      - project_back
+    command: ["./start.sh"]
 
 networks: 
   project_back:

@@ -86,19 +86,22 @@
 (defn add-
   [add-project set-project-history response token alert-action]
   (response (fn [data]
-              (add-project data)
-              (get-history set-project-history data token)
-              (alert-action {:status true
-                             :message (messages/put-project-success (:name data))}))))
+              (if (contains? data :error)
+                (alert-action {:status false
+                               :message (messages/put-project-fail (:error data))})
+                (do
+                 (add-project data)
+                 (get-history set-project-history data token)
+                 (alert-action {:status true
+                                :message (messages/put-project-success (:name data))}))))))
+
+
 
 (defn add-state
   [add-project set-project-history state token alert-action]
   (-> (put-project state token)
       (p/then (fn [response]
-                (if (contains? response :error)
-                  (alert-action {:status false
-                                 :message (messages/put-project-fail (:name state))})
-                  (add- add-project set-project-history response token alert-action))))
+                (add- add-project set-project-history response token alert-action)))
       (p/catch (fn [error]
                  (js/console.log "error in promisa" error)))))
 
