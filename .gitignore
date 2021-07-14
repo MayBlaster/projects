@@ -9,3 +9,4 @@ minikube-linux-amd64
 node_modules/
 resources/public/js/
 projects-backend.yaml
+resources/public/css/main.css

@@ -108,9 +108,12 @@
 (defn update-state
   [current-project next-status db]
   (let  [status_id (get (get-all-status db) next-status)
-         next-project (assoc current-project :status_id status_id)
+         timestamp (get-timestamp)
+         next-project (-> current-project
+                          (assoc :status_id status_id)
+                          (assoc :timestamp timestamp))
          query (-> {:update :projects
-                    :set {:status_id status_id :timestamp (get-timestamp)}
+                    :set {:status_id status_id :timestamp timestamp}
                     :where [:= :id (:id current-project)]}
                    (sql/format))]
     (jdbc/execute-one! db query {})
