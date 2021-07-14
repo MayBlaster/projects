@@ -13,6 +13,7 @@ ADD src/cljs /projects/src/cljs
 COPY resources/public/index.html resources/public/index.html
 
 RUN apk add --update npm && \
+    apk add openjdk8 && \
     npm install shadow-cljs && \
     npm install react react-dom react-refresh tailwindcss && \
     npx tailwind build src/cljs/tailwind.css -o resources/public/css/main.css && \

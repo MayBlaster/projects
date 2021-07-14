@@ -2,9 +2,8 @@
   (:require [integrant.core :as ig]))
 
 (defmethod ig/init-key ::login
-  [_ {:keys [handler]}]
+  [_ _]
   (-> {}
-      (assoc :handler handler)
       (assoc :tags ["Login"])
       (assoc :description "Authenticates a user")
       (assoc :summary "Checks user credentials")
